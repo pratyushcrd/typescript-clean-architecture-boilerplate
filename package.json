@@ -1,0 +1,28 @@
+{
+  "name": "typescript-clean-architecture-boilerplate",
+  "version": "1.0.0",
+  "description": "An implementation of Clean Architecture in Typescript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pratyushcrd/typescript-clean-architecture-boilerplate.git"
+  },
+  "keywords": [
+    "typescript",
+    "clean",
+    "architecture",
+    "uncle",
+    "bob",
+    "pratyushcrd",
+    "pratyush"
+  ],
+  "author": "pratyushcrd",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pratyushcrd/typescript-clean-architecture-boilerplate/issues"
+  },
+  "homepage": "https://github.com/pratyushcrd/typescript-clean-architecture-boilerplate#readme"
+}
