@@ -1,13 +1,15 @@
 import production from './production.json';
 import development from './development.json';
 
-interface Config {
-  isDevEnv: Boolean;
-  isProdEnv: Boolean;
-  serverPort: Number;
+export interface Config {
+  isDevEnv: boolean;
+  isProdEnv: boolean;
+  serverPort: number;
+  mongoPrimaryUrl: string;
+  mongoPrimaryDbName: string;
 }
 
-interface NodeEnvConfig {
+export interface NodeEnvConfig {
   [index: string]: string | Number;
 }
 
@@ -16,7 +18,7 @@ const EnvConfigMap = {
   production: production
 }
 
-export default function makeConfig(envName: string, envConfig: NodeEnvConfig): Config {
+export function makeConfig(envName: string, envConfig: any = {}): Config {
   const staticConfig = EnvConfigMap[envName];
 
   // if wrong env name is provided; throw error
@@ -38,5 +40,7 @@ export default function makeConfig(envName: string, envConfig: NodeEnvConfig): C
     isDevEnv: envName === 'development',
     isProdEnv: envName === 'production',
     serverPort: +envOrStatic('server.port'),
+    mongoPrimaryUrl: envOrStatic('mongo.primary.url'),
+    mongoPrimaryDbName: envOrStatic('mongo.primary.db.name'),
   }
 }

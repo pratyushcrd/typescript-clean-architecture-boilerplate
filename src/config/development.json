@@ -1,3 +1,5 @@
 {
-  "server.port": 8080
+  "server.port": 8080,
+  "mongo.primary.url": "mongodb://localhost:27017",
+  "mongo.primary.db.name": "core-local"
 }
