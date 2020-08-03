@@ -5,8 +5,14 @@ export interface Config {
   isDevEnv: boolean;
   isProdEnv: boolean;
   serverPort: number;
+  appName: string;
+  env: string;
+  serverHost: string;
   mongoPrimaryUrl: string;
   mongoPrimaryDbName: string;
+  corsWhitelist: string;
+  ddosBurst: number;
+  ddosLimit: number;
 }
 
 export interface NodeEnvConfig {
@@ -37,10 +43,16 @@ export function makeConfig(envName: string, envConfig: any = {}): Config {
   }
 
   return {
+    appName: envOrStatic('app.name', 'system'),
     isDevEnv: envName === 'development',
     isProdEnv: envName === 'production',
+    env: envName,
     serverPort: +envOrStatic('server.port'),
+    serverHost: envOrStatic('server.host', 'localhost'),
+    corsWhitelist: envOrStatic('cors.whitelist', '').split(','),
     mongoPrimaryUrl: envOrStatic('mongo.primary.url'),
     mongoPrimaryDbName: envOrStatic('mongo.primary.db.name'),
+    ddosBurst: +envOrStatic('ddos.burst', 20),
+    ddosLimit: +envOrStatic('ddos.limit', 20),
   }
 }
