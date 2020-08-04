@@ -21,7 +21,7 @@ const getCorsConfig = whitelist => ({
   },
 });
 
-function onError(error) {
+function getError(error) {
   const port = error.port;
   if (error.syscall !== "listen") {
     throw error;
@@ -30,13 +30,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case "EACCES":
-      console.error(`${bind} requires elevated privileges`);
-      process.exit(1);
+      return `${bind} requires elevated privileges`;
     case "EADDRINUSE":
-      console.error(`${bind} is already in use`);
-      process.exit(1);
+      return `${bind} is already in use`;
     default:
-      throw error;
+      return error;
   }
 }
 
@@ -96,13 +94,14 @@ export class ExpressServer extends LifeCycle {
 
     const server = this.get();
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       server
         .listen(port, () => {
-          container.logger.info(`server listening on port ${port}.`);
-          return resolve();
+          return resolve(`server listening on port ${port}.`);
         })
-        .on('error', onError)
+        .on('error', (err) => {
+          return reject(getError(err))
+        })
     })
   }
 

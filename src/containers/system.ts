@@ -16,20 +16,17 @@ export function createSystemContainer(env: string, envVariables: any) {
 
   container.register({
     config: asValue(config),
-    app: asClass(Application),
-    pino: asFunction(getPinoDriver),
-    expressServer: asClass(ExpressServer),
-
-    logger: asFunction(config.useConsole ? createConsoleLogger : createPinoLogger),
-
-    mongoPrimary: asClass(MongoPrimaryDbDriver)
-      .singleton(),
-    userRepository: asFunction(createUserRepository)
-      .singleton(),
+    // registering data/presenter drivers
+    app: asClass(Application).singleton(),
+    pino: asFunction(getPinoDriver).singleton(),
+    expressServer: asClass(ExpressServer).singleton(),
+    logger: asFunction(config.useConsole ? createConsoleLogger : createPinoLogger).singleton(),
+    mongoPrimary: asClass(MongoPrimaryDbDriver).singleton(),
+    // registering data repositories
+    userRepository: asFunction(createUserRepository).singleton(),
+    // registering controllers
     // register use-cases
-    addUser: asFunction(makeAddUser)
-      .singleton(),
-
+    addUser: asFunction(makeAddUser).singleton(),
   })
 
   return container

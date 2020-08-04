@@ -8,16 +8,31 @@ const envVariables = process.env
 const system = createSystemContainer(env, envVariables)
 
 const app: any = system.resolve('app')
+const logger: any = system.resolve('logger')
 
-// function exitHandler () {
-// }
+function exitHandler (exitCode: number, message: string) {
+  return function (error) {
+    logger.error(message, error);
+    process.exit(exitCode);
+  }
+}
 
-// process.on('uncaughtException', exitHandler(1, 'Unexpected Error'))
-// process.on('unhandledRejection', exitHandler(1, 'Unhandled Promise'))
-// process.on('SIGTERM', exitHandler(0, 'SIGTERM'))
-// process.on('SIGINT', exitHandler(0, 'SIGINT'))
+function asyncExitHandler(handler: Function) {
+  return async function (error) {
+    logger.error('Error occured, shutting down application.')
+    await app.stop().catch(e => e)
+    return handler(error)
+  }
+}
 
+process.on('uncaughtException', asyncExitHandler(exitHandler(1, 'Unexpected Error: ')))
+process.on('unhandledRejection', asyncExitHandler(exitHandler(1, 'Unhandled Promise: ')))
+process.on('SIGTERM', exitHandler(0, 'sigterm'))
+process.on('SIGINT', exitHandler(0, 'sigint'))
+
+logger.info('Starting Application.')
 app.start()
+  .catch(exitHandler(1, 'Failure in application startup: '))
   .then(() => {
     // const AddUser: any = system.resolve('addUser')
     // const event: AddUserEvent = AddUser(
@@ -27,13 +42,13 @@ app.start()
     //     .setName('Pratyush')
     // )
     // event.on(AddUserEvent.emits.error, (err) => {
-    //   console.log('Error:', err.message)
+    //   logger.info('Error:', err.message)
     // })
     // event.on(AddUserEvent.emits.user_exists, (user) => {
-    //   console.log('User already exists: ', user.email)
+    //   logger.info('User already exists: ', user.email)
     // })
     // event.on(AddUserEvent.emits.success, (user) => {
-    //   console.log('User added: ', user.email)
+    //   logger.info('User added: ', user.email)
     // })
   })
 
