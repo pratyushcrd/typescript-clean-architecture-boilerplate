@@ -30,9 +30,9 @@ function getError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case "EACCES":
-      return `${bind} requires elevated privileges`;
+      return Error(`${bind} requires elevated privileges`);
     case "EADDRINUSE":
-      return `${bind} is already in use`;
+      return Error(`${bind} is already in use`);
     default:
       return error;
   }

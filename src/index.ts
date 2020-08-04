@@ -14,7 +14,7 @@ const system = createSystemContainer(env, envVariables)
 const app: any = system.resolve('app')
 const logger: any = system.resolve('logger')
 
-function exitHandler (exitCode: number, message: string) {
+function exitHandler(exitCode: number, message: string) {
   return function (error) {
     logger.error(message, error);
     process.exit(exitCode);
@@ -36,7 +36,7 @@ process.on('SIGINT', exitHandler(0, 'sigint'))
 
 logger.info('Starting Application...')
 app.start()
-  .catch(exitHandler(1, 'Failure in application startup! Error: '))
+  .catch(exitHandler(1, 'Failure in application startup!'))
   .then(() => logger.info('Application is now running!'))
   .then(() => {
     // const AddUser: any = system.resolve('addUser')

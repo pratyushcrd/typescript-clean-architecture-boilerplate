@@ -1,15 +1,11 @@
 import { Config } from './config'
 import { UserRepositoryInterface } from './business-layer/entity-interfaces/User'
+import { LoggerRepositoryInterface } from './business-layer/entity-interfaces/Logger'
 import { User } from './business-layer/entities/User'
 // Lifecycle components
 import { LifeCycle } from './util/LifeCycle'
 import { AddUserEvent } from './business-layer/use-cases/user/AddUser'
 
-interface Logger {
-  info: Function;
-  warn: Function;
-  error: Function;
-}
 
 export { ActiveMongoPrimaryDriver } from './data-layer/drivers/MongoPrimaryDbDriver'
 export { Config } from './config'
@@ -21,7 +17,7 @@ export interface Container {
   pino: any;
   userRepository: UserRepositoryInterface;
   mongoPrimary: LifeCycle;
-  logger: Logger,
+  logger: LoggerRepositoryInterface,
   expressServer: LifeCycle,
 
   // use cases
