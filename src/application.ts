@@ -12,7 +12,7 @@ export class Application extends LifeCycle {
     const { mongoPrimary, expressServer, logger } = container
     logger.info('initiating application...')
     // start data drivers first
-    await mongoPrimary.start()
+    await mongoPrimary//.start()
     // then start controllers to maintain dependency
     await expressServer.start()
     logger.info('application started successfully!')

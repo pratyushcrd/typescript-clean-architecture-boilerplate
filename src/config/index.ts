@@ -12,6 +12,7 @@ export interface Config {
   mongoPrimaryDbName: string;
   corsWhitelist: string;
   ddosBurst: number;
+  useConsole: boolean;
   ddosLimit: number;
 }
 
@@ -24,6 +25,23 @@ const EnvConfigMap = {
   production: production
 }
 
+const envOrStaticGetter = (envName, envConfig, staticConfig) => (key: string, defaultVal?) => {
+  const result = envConfig[key] || staticConfig[key];
+  // when the defaultValue is undefined, data must be present in config
+  // or else throw error
+  if (!result && result !== '' && isNaN(result) && defaultVal === undefined) {
+    throw Error(`key: "${key}", not found in either static or env config (env: ${envName}).`)
+  }
+  return result || defaultVal;
+}
+
+const isPresentGetter = (envConfig, staticConfig) => (...keys: string[]): boolean => {
+  return keys
+    .map((key = '') => envConfig[key] || staticConfig[key])
+    .filter(it => it)
+    .length !== 0;
+}
+
 export function makeConfig(envName: string, envConfig: any = {}): Config {
   const staticConfig = EnvConfigMap[envName];
 
@@ -32,21 +50,25 @@ export function makeConfig(envName: string, envConfig: any = {}): Config {
     throw Error(`env name ${envName} is improper. env should be one of ${Object.keys(EnvConfigMap).join('|')}.`)
   }
 
-  const envOrStatic = (key: string, defaultVal?) => {
-    const result = envConfig[key] || staticConfig[key];
-    // when the defaultValue is undefined, data must be present in config
-    // or else throw error
-    if (!result && result !== '' && isNaN(result) && defaultVal === undefined) {
-      throw Error(`key: "${key}", not found in either static or env config (env: ${envName}).`)
-    }
-    return result || defaultVal;
+  const envOrStatic = envOrStaticGetter(envName, envConfig, staticConfig);
+  const isPresentInConfig = isPresentGetter(envConfig, staticConfig);
+
+  const isDevEnv = envName === 'development';
+  let useConsole = isDevEnv;
+
+  if (isPresentInConfig('usePino', 'use.pino')) {
+    useConsole = false;
+  }
+  if (isPresentInConfig('useConsole', 'use.console')) {
+    useConsole = true;
   }
 
   return {
     appName: envOrStatic('app.name', 'system'),
-    isDevEnv: envName === 'development',
+    isDevEnv,
     isProdEnv: envName === 'production',
     env: envName,
+    useConsole,
     serverPort: +envOrStatic('server.port'),
     serverHost: envOrStatic('server.host', 'localhost'),
     corsWhitelist: envOrStatic('cors.whitelist', '').split(','),
