@@ -10,6 +10,10 @@ const errorParamsSorter = (a, b) => {
   }
   return 0
 }
+const paramsForLogger = params => params.reduce((acc, val, idx) => {
+  acc[`p${idx}`] = val;
+  return acc;
+}, {})
 
 /**
  * Simple logger implementation
@@ -17,8 +21,8 @@ const errorParamsSorter = (a, b) => {
 export function createPinoLogger({ pino, config }: Container): LoggerRepositoryInterface {
 
   return {
-    info: (...params) => pino.info(...params),
-    warn: (...params) => pino.warn(...params),
+    info: (...params) => pino.info(paramsForLogger(params)),
+    warn: (...params) => pino.warn(paramsForLogger(params)),
     error: (...params) => pino.error(...params.sort(errorParamsSorter)),
     debug: (...params) => {
       if (config.isDevEnv) {
