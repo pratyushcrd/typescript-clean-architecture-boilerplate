@@ -2,8 +2,12 @@ import { createSystemContainer } from './containers/system'
 // import { User } from './business-layer/entities/User'
 // import { AddUserEvent } from './business-layer/use-cases/user/AddUser'
 
-const env: string = 'development' || process.env.NODE_ENV
+let env: string = process.env.NODE_ENV || 'development'
 const envVariables = process.env
+
+if (env === 'dev') {
+  env = 'development';
+}
 
 const system = createSystemContainer(env, envVariables)
 
