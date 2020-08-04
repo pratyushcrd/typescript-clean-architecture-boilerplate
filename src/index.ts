@@ -34,9 +34,10 @@ process.on('unhandledRejection', asyncExitHandler(exitHandler(1, 'Unhandled Prom
 process.on('SIGTERM', exitHandler(0, 'sigterm'))
 process.on('SIGINT', exitHandler(0, 'sigint'))
 
-logger.info('Starting Application.')
+logger.info('Starting Application...')
 app.start()
-  .catch(exitHandler(1, 'Failure in application startup: '))
+  .catch(exitHandler(1, 'Failure in application startup! Error: '))
+  .then(() => logger.info('Application is now running!'))
   .then(() => {
     // const AddUser: any = system.resolve('addUser')
     // const event: AddUserEvent = AddUser(
